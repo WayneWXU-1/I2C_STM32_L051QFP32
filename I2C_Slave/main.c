@@ -91,6 +91,7 @@ void main(void)
 	__enable_irq();
 	RCC->IOPENR |= BIT0;
 	GPIOA->MODER = (GPIOA->MODER & ~(BIT16|BIT17)) | BIT16;
+	GPIOA->MODER = (GPIOA->MODER & ~(BIT10|BIT11)) | BIT10; // PA5 output
 
 
 
@@ -110,6 +111,15 @@ void main(void)
 				GPIOA->ODR |= BIT8;
 			else if (g_command == 0x00)
 				GPIOA->ODR &= ~BIT8;
+
+			else if (g_command == 0x02)
+			{
+				GPIOA->ODR |= BIT5;
+				waitms(500);
+				GPIOA->ODR &= ~BIT5;
+			}
 		}
+
+			
 	}
 }

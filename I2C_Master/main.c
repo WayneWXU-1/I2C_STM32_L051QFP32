@@ -93,5 +93,8 @@ void main(void)
         GPIOA->ODR &= ~BIT8;       // master LED off
         I2C_Send(SLAVE_ADDRESS, 0x00); // tell slave: LED off
         waitms(500);
+        
+        I2C_Send(SLAVE_ADDRESS, 0x02);
+        waitms(500);
     }
 }

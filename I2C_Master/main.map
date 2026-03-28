@@ -11,7 +11,7 @@ Linker script and memory map
 LOAD startup.o
 LOAD main.o
 
-.text           0x08000000      0x43c
+.text           0x08000000      0x44c
  *(.vectors)
  .vectors       0x08000000       0xb8 startup.o
                 0x08000000                Vectors
@@ -53,40 +53,40 @@ LOAD main.o
                 0x08000248                TIM22_Handler
                 0x08000248                ADC_COMP_Handler
                 0x0800024e                Hard_Fault_Handler
- .text          0x08000254      0x1e8 main.o
+ .text          0x08000254      0x1f8 main.o
                 0x08000254                wait_1ms
                 0x0800028c                waitms
                 0x080002ae                I2C_Init
                 0x08000350                I2C_Send
                 0x080003bc                main
  *(.rodata*)
-                0x0800043c                . = ALIGN (0x4)
-                0x0800043c                PROVIDE (__init_array_start = .)
+                0x0800044c                . = ALIGN (0x4)
+                0x0800044c                PROVIDE (__init_array_start = .)
  *(SORT_BY_NAME(.init_array.*))
  *(.init_array)
-                0x0800043c                PROVIDE (__init_array_end = .)
-                0x0800043c                . = ALIGN (0x4)
-                0x0800043c                _etext = .
+                0x0800044c                PROVIDE (__init_array_end = .)
+                0x0800044c                . = ALIGN (0x4)
+                0x0800044c                _etext = .
 
-.glue_7         0x0800043c        0x0
- .glue_7        0x0800043c        0x0 linker stubs
+.glue_7         0x0800044c        0x0
+ .glue_7        0x0800044c        0x0 linker stubs
 
-.glue_7t        0x0800043c        0x0
- .glue_7t       0x0800043c        0x0 linker stubs
+.glue_7t        0x0800044c        0x0
+ .glue_7t       0x0800044c        0x0 linker stubs
 
-.vfp11_veneer   0x0800043c        0x0
- .vfp11_veneer  0x0800043c        0x0 linker stubs
+.vfp11_veneer   0x0800044c        0x0
+ .vfp11_veneer  0x0800044c        0x0 linker stubs
 
-.v4_bx          0x0800043c        0x0
- .v4_bx         0x0800043c        0x0 linker stubs
+.v4_bx          0x0800044c        0x0
+ .v4_bx         0x0800044c        0x0 linker stubs
 
-.iplt           0x0800043c        0x0
- .iplt          0x0800043c        0x0 startup.o
+.iplt           0x0800044c        0x0
+ .iplt          0x0800044c        0x0 startup.o
 
-.rel.dyn        0x0800043c        0x0
- .rel.iplt      0x0800043c        0x0 startup.o
+.rel.dyn        0x0800044c        0x0
+ .rel.iplt      0x0800044c        0x0 startup.o
 
-.data           0x20000000        0x0 load address 0x0800043c
+.data           0x20000000        0x0 load address 0x0800044c
                 0x20000000                . = ALIGN (0x4)
                 0x20000000                _data = .
  *(.data*)
@@ -95,10 +95,10 @@ LOAD main.o
                 0x20000000                . = ALIGN (0x4)
                 0x20000000                _edata = .
 
-.igot.plt       0x20000000        0x0 load address 0x0800043c
+.igot.plt       0x20000000        0x0 load address 0x0800044c
  .igot.plt      0x20000000        0x0 startup.o
 
-.bss            0x20000000        0x0 load address 0x0800043c
+.bss            0x20000000        0x0 load address 0x0800044c
                 0x20000000                _bss = .
  *(.bss*)
  .bss           0x20000000        0x0 startup.o
@@ -129,15 +129,15 @@ LOAD linker stubs
 .debug_ranges   0x00000000       0x18
  .debug_ranges  0x00000000       0x18 startup.o
 
-.debug_line     0x00000000      0x4bb
+.debug_line     0x00000000      0x4c5
  .debug_line    0x00000000      0x25d startup.o
- .debug_line    0x0000025d      0x25e main.o
+ .debug_line    0x0000025d      0x268 main.o
 
-.debug_str      0x00000000      0x344
- .debug_str     0x00000000      0x278 startup.o
-                                0x2b5 (size before relaxing)
- .debug_str     0x00000278       0xcc main.o
-                                0x2aa (size before relaxing)
+.debug_str      0x00000000      0x350
+ .debug_str     0x00000000      0x284 startup.o
+                                0x2c1 (size before relaxing)
+ .debug_str     0x00000284       0xcc main.o
+                                0x2b6 (size before relaxing)
 
 .comment        0x00000000       0x49
  .comment       0x00000000       0x49 startup.o
