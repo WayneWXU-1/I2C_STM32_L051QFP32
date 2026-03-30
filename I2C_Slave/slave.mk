@@ -18,14 +18,15 @@ ASFLAGS=-mcpu=cortex-m0plus -mthumb -g
 LDFLAGS=-T ../Common/LDscripts/stm32l051xx_simple.ld -cref
 
 # List the object files used in this project
-OBJS= startup.o main.o 
+OBJS= startup.o main.o lcd.o
 
 # The default 'target' (output) is main.elf and 'depends' on
 # the object files listed in the 'OBJS' assignment above.
 # These object files are linked together to create main.elf.
 # The linked file is converted to hex using program objcopy.
+# The linked file is converted to hex using program objcopy.
 main.elf: $(OBJS)
-	$(LD) $(OBJS) $(LDFLAGS) -Map main.map -o main.elf
+	$(CC) -mcpu=cortex-m0plus -mthumb -nostartfiles $(OBJS) -T ../Common/LDscripts/stm32l051xx_simple.ld -Wl,-Map,main.map -Wl,--cref -o main.elf
 	arm-none-eabi-objcopy -O ihex main.elf main.hex
 	@echo Success!
 
@@ -38,7 +39,9 @@ main.o: main.c
 # compiled to create startup.o
 startup.o: ../Common/Source/startup.c
 	$(CC) -c $(CCFLAGS) ../Common/Source/startup.c -o startup.o
-
+	
+lcd.o: lcd.c
+	$(CC) -c $(CCFLAGS) lcd.c -o lcd.o
 # Target 'clean' is used to remove all object files and executables
 # associated with this project
 clean:
