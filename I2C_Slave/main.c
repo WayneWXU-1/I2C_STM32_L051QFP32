@@ -24,6 +24,9 @@
 
 #define F_CPU 32000000L
 #define MY_ADDRESS 0x42
+volatile uint8_t r_data[2] = {0};
+volatile uint8_t r_counter = 0;
+volatile uint8_t r_data_ready = 0;
 
 /*
  * This course's ../Common/Source/startup.c installs I2C1_Handler in the vector
@@ -72,17 +75,24 @@ void I2C_Init(void)
 
 void I2C1_Handler(void)
 {
-	if (I2C1->ISR & I2C_ISR_ADDR)
-		I2C1->ICR |= I2C_ICR_ADDRCF;
+    if (I2C1->ISR & I2C_ISR_ADDR)
+    {
+        I2C1->ICR |= I2C_ICR_ADDRCF;
+        r_counter = 0;
+    }
 
-	if (I2C1->ISR & I2C_ISR_RXNE)
-		g_command = (uint8_t)I2C1->RXDR;
+    if (I2C1->ISR & I2C_ISR_RXNE)
+    {
+        if (r_counter < 2)
+            r_data[r_counter] = I2C1->RXDR;
+        r_counter++;
+    }
 
-	if (I2C1->ISR & I2C_ISR_STOPF)
-	{
-		I2C1->ICR |= I2C_ICR_STOPCF;
-		g_command_ready = 1;
-	}
+    if (I2C1->ISR & I2C_ISR_STOPF)
+    {
+        I2C1->ICR |= I2C_ICR_STOPCF;
+        r_data_ready = 1;
+    }
 }
 
 void main(void)
@@ -102,24 +112,23 @@ void main(void)
 	GPIOA->ODR |= BIT8;  waitms(100);
 	GPIOA->ODR &= ~BIT8; waitms(100);
 
-	while(1)
+	while(1){
+
+	if (r_data_ready)
 	{
-		if (g_command_ready)
-		{
-			g_command_ready = 0;
-			if (g_command == 0x01)
-				GPIOA->ODR |= BIT8;
-			else if (g_command == 0x00)
-				GPIOA->ODR &= ~BIT8;
+    r_data_ready = 0;
+    uint16_t packet  = ((uint16_t)r_data[0] << 8) | r_data[1];
+    uint8_t  command = (packet >> 12) & 0xF;
+    uint16_t data    = packet & 0x0FFF;
 
-			else if (g_command == 0x02)
-			{
-				GPIOA->ODR |= BIT5;
-				waitms(500);
-				GPIOA->ODR &= ~BIT5;
-			}
-		}
-
+    if (command == 0x1)
+    {
+        if (data < 200)
+            GPIOA->ODR |= BIT8;
+        else
+            GPIOA->ODR &= ~BIT8;
+    }
+	}	
 			
 	}
 }
